@@ -11,14 +11,14 @@ namespace Corpa4Sem4.Database.Models
     {
         [Key]
         public int Id { get; set; }
-        public int FromId { get; set; }
-        public User ?From { get; set; }
-        public int ToId { get; set; }
-        public User ?To { get; set; }
-        public string ?Title { get; set; }
+        public int FromUserId { get; set; }
+        public User ?FromUser { get; set; }
+        public int ToUserId { get; set; }
+        public User ?ToUser { get; set; }
+        public string ?MessageHeadline { get; set; }
 
-        public string ?Text { get; set; }
-        public DateTime Date { get; set; }
+        public string ?MessageText { get; set; }
+        public DateTime SendDate { get; set; } = DateTime.UtcNow;
 
         public bool Status { get; set; }
 

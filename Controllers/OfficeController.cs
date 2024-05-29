@@ -27,17 +27,17 @@ namespace PraktASPApp.Controllers
 
 			Console.WriteLine(model.Status);
 			var messages = (from msg in db.Messages.ToList()
-							where msg.ToId == user.Id
+							where msg.ToUserId == user.Id
 							select msg).ToList()
 							.Where(msg=> !msg.Status || model.Status != "on")
 				.Select(msg => new MessageVM
 				{
 					Id = msg.Id, 
-					From = db.Users.ToList().First(u => u.Id == msg.FromId).Login
+					From = db.Users.ToList().First(u => u.Id == msg.FromUserId).Login
 					,
-					Title = msg.Title,
-					Text = msg.Text,
-					Date = msg.Date,
+					Title = msg.MessageHeadline,
+					Text = msg.MessageText,
+					Date = msg.SendDate,
 					Status = msg.Status
 					
 				}).ToList().OrderByDescending(m => m.Date);
@@ -57,6 +57,7 @@ namespace PraktASPApp.Controllers
 			}
 
 			message.Status = true;
+    		message.SendDate = DateTime.UtcNow; // Ensure DateTime is in UTC
 			db.Messages.Update(message);
 			db.SaveChanges();
 
@@ -85,22 +86,22 @@ namespace PraktASPApp.Controllers
 
 			if (receiverUser == null)
 			{
-                ViewData["Message"] = $"Ошибка: адрес '{model.To}' не найден";
+                ViewData["Message"] = $"пїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅ '{model.To}' пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ";
                 return View();
 			}
 
 			DateTime currentTime = DateTime.UtcNow;
 			db.Messages.Add(new Corpa4Sem4.Database.Models.Message
 			{
-				FromId = user.Id,
-				ToId = receiverUser.Id,
-				Title = model.Title,
-				Text = model.Text,
-				Date = DateTime.UtcNow
+				FromUserId = user.Id,
+				ToUserId = receiverUser.Id,
+				MessageHeadline = model.Title,
+				MessageText = model.Text,
+				SendDate = DateTime.UtcNow
 			});
 			db.SaveChanges();
 
-            ViewData["Message"] = "Ошибка: действие не выполнено";
+            ViewData["Message"] = "пїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ";
             return RedirectToAction("Office", "Office");
 		}
 
